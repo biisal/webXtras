@@ -1,0 +1,64 @@
+# Node.js (Frontend and Node.js Backends)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.next/
+out/
+
+# Python (Python Backends)
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+env.bak/
+venv.bak/
+.venv/
+*.env
+
+# Java (Java Backends)
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+.gradle/
+build/
+target/
+*.log
+
+# PHP (PHP Backends)
+vendor/
+*.log
+*.cache
+
+# Shared Files and Debugging Artifacts
+shared-assets/*.lock
+
+# Logs and Temporary Files
+logs/
+*.log
+*.tmp
+*.pid
+*.seed
+*.cover
+
+# IDE and OS Files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+*.tmp
+*.lock
