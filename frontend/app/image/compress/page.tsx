@@ -1,7 +1,7 @@
 import ImageCompress from "@/components/image-compress";
 
-const Compress = () => {
+const ImageCompressPage = () => {
     return (<ImageCompress />);
 }
 
-export default Compress;
+export default ImageCompressPage;

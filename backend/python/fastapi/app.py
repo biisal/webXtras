@@ -34,7 +34,7 @@ def cleanup_file(file_path: str):
         print(f"Failed to delete file {file_path}: {e}")
 
 @app.post("/api/ytdl")
-def ytdl(video_request: VideoRequest, background_tasks: BackgroundTasks):
+def ytdl(video_request: VideoRequest, background_tasks: BackgroundTasks) -> FileResponse:
     url = video_request.url
     try:
         # Configure yt_dlp options
@@ -42,8 +42,6 @@ def ytdl(video_request: VideoRequest, background_tasks: BackgroundTasks):
             "outtmpl": os.path.join(TEMP_DIR, "%(title)s.%(ext)s"),
             "format": "mp4/best",  # Choose the best available MP4 format
         }
-        
-        # Download the video
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
             file_path = ydl.prepare_filename(info)

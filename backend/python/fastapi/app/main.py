@@ -1,13 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from api import image_tool 
+
 
 app = FastAPI(
     title="webXtras API",
     description="API for webXtras",
-    version="0.0.1",
-)
+    version="0.0.1")
 
 app.add_middleware(
     CORSMiddleware,
