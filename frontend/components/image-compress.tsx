@@ -14,8 +14,11 @@ import { useToast } from "@/hooks/use-toast";
 
 const ImageCompress = () => {
   const { compress, compressedImage, error } = useImage();
+  const { compress, compressedImage, error } = useImage();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [quality, setQuality] = useState<number>(50);
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
@@ -32,28 +35,30 @@ const ImageCompress = () => {
   const handleCompress = async () => {
     if (selectedImage) {
       startTransition(async () => {
-        try {
-          const data = await compress(selectedImage, quality);
-          if (data)
-            toast({
-              title: "Image compressed successfully",
-              description: "Your image has been compressed and is ready for download.",
-            });
-          else
-            toast({
-              title: error?.title || "Image compression failed !",
-              variant: "destructive",
-              description: error?.description || "Please try again later.",
-            });
+        startTransition(async () => {
+          try {
+            const data = await compress(selectedImage, quality);
+            if (data)
+              toast({
+                title: "Image compressed successfully",
+                description: "Your image has been compressed and is ready for download.",
+              });
+            else
+              toast({
+                title: error?.title || "Image compression failed !",
+                variant: "destructive",
+                description: error?.description || "Please try again later.",
+              });
 
-        } catch (e) {
-          console.error("Error compressing image:", e);
-          toast({
-            title: "Compression failed",
-            description: error?.description || "Please try again later.",
-            variant: "destructive",
-          });
-        }
+          } catch (e) {
+            console.error("Error compressing image:", e);
+            toast({
+              title: "Compression failed",
+              description: error?.description || "Please try again later.",
+              variant: "destructive",
+            });
+          }
+        });
       });
     }
   };
@@ -93,46 +98,74 @@ const ImageCompress = () => {
           ) : (
             "Compress Image"
           )}
-        </Button>
-        {compressedImage && (
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Compressed Image</h3>
-            <div className="max-w-full h-60 relative">
-              <Image
-                src={compressedImage.compressed_url}
-                alt="Compressed"
-                fill
-                className="rounded-md object-cover"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <p className="font-medium">Original Size</p>
-                <p>{compressedImage.original_size}</p>
-              </div>
-              <div>
-                <p className="font-medium">Compressed Size</p>
-                <p>{compressedImage.compressed_size}</p>
-              </div>
-              <div>
-                <p className="font-medium">Quality</p>
-                <p>{compressedImage.quality}%</p>
-              </div>
-            </div>
-            <Button asChild className="w-full">
-              <a
-                href={compressedImage.compressed_url}
-                download="compressed_image"
-              >
-                Download Compressed Image
-              </a>
-            </Button>
-          </div>
-        )}
-      </CardContent>
+          <Button onClick={handleCompress} disabled={!selectedImage || isPending}>
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Compressing...
+              </>
+            ) : (
+              "Compress Image"
+            )}
+          </Button>
+          {compressedImage && (
+            <div className="space-y-4">
+              {compressedImage && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Compressed Image</h3>
+                  <div className="max-w-full h-60 relative">
+                    <Image
+                      src={compressedImage.compressed_url}
+                      src={compressedImage.compressed_url}
+                      alt="Compressed"
+                      fill
+                      className="rounded-md object-cover"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="font-medium">Original Size</p>
+                      <p>{compressedImage.original_size}</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Compressed Size</p>
+                      <p>{compressedImage.compressed_size}</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Quality</p>
+                      <p>{compressedImage.quality}%</p>
+                    </div>
+                  </div>
+                  <Button asChild className="w-full">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="font-medium">Original Size</p>
+                        <p>{compressedImage.original_size}</p>
+                      </div>
+                      <div>
+                        <p className="font-medium">Compressed Size</p>
+                        <p>{compressedImage.compressed_size}</p>
+                      </div>
+                      <div>
+                        <p className="font-medium">Quality</p>
+                        <p>{compressedImage.quality}%</p>
+                      </div>
+                    </div>
+                    <Button asChild className="w-full">
+                      <a
+                        href={compressedImage.compressed_url}
+                        href={compressedImage.compressed_url}
+                        download="compressed_image"
+                      >
+                        Download Compressed Image
+                      </a>
+                    </Button>
+                </div>
+              )}
+            </CardContent>
     </Card>
-  );
+        );
 };
 
-export default ImageCompress;
+        export default ImageCompress;
 
