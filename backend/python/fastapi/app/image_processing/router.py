@@ -1,7 +1,9 @@
 from typing import Dict
-from loguru import logger
+from logging import getLogger
 from fastapi import APIRouter , File , UploadFile , HTTPException, Form
 from fastapi.responses import StreamingResponse
+
+logger = getLogger(__name__)
 
 from app.image_processing.model import (
     ImageCompressRequest,
@@ -17,23 +19,24 @@ router = APIRouter()
 @router.post("/compress")
 async def compress(image : UploadFile = File(...),
     quality: int= Form(80, ge=1, description="Quality of the pdf file in percentage."),
-) -> StreamingResponse:
+) -> Dict[str, int | str]:
+    
     """
-    **Compress an uploaded image file to the specified quality.**
+    **Compress an image to the specified quality.**
 
     `Parameters`:
     - **image**: UploadFile - The image file to be compressed. Must be a valid image format (e.g., JPEG, PNG).
-    - **quality**: - Contains the compression parameters, such as the desired quality (percentage).
+    - **quality**: - Quality of the compressed image in percentage.
 
     `Returns`:
-    - **StreamingResponse**: A response stream containing the compressed image file.
+    - **Dict[str, int | str]**: A JSON response containing the size of the original and compressed images and the quality of the compressed image.
     """
+    
     if image.content_type is None or not image.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Please upload an image file")
-    
     try:
-        buffer = compress_image(image, quality)
-        return StreamingResponse(buffer, media_type="image/jpeg")
+        data:dict[str, int | str] = await compress_image(image, quality)
+        return data
     except Exception as e:
         logger.error(f"Error compressing image: {e=}")
         raise HTTPException(status_code=500, detail="Failed to compress image!")

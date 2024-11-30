@@ -61,3 +61,17 @@ Thumbs.db
 *.bak
 *.tmp
 *.lock
+
+
+
+# Large media files
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv
+*.csv
+*.json
+*.xlsx
+*.xls
