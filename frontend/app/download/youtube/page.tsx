@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import axios from "axios";
 
 const DownloaderPage = () => {
     const [url, setUrl] = useState("");
@@ -9,15 +8,22 @@ const DownloaderPage = () => {
     const downloadVideo = async () => {
         setStatus("Downloading...");
         try {
-            const response = await axios.post(
-                "http://127.0.0.1:5000/api/download",
-                { url },
-                { responseType: "blob" } // To handle file responses
-            );
+            const response = await fetch("http://127.0.0.1:8000/api/ytdl", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ url }),
+            });            
 
-            const urlBlob = window.URL.createObjectURL(new Blob([response.data]));
+            if (!response.ok) {
+                throw new Error("Failed to download the video");
+            }
+
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
             const link = document.createElement("a");
-            link.href = urlBlob;
+            link.href = downloadUrl;
             link.setAttribute("download", "video.mp4");
             document.body.appendChild(link);
             link.click();
