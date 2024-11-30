@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, Response, request, jsonify, send_file , abort
 from flask_cors import CORS
 import os
 from yt_dlp import YoutubeDL
@@ -11,9 +11,9 @@ TEMP_DIR = "./temp"
 os.makedirs(TEMP_DIR, exist_ok=True)
 
 @app.route('/api/download', methods=['POST'])
-def download_video():
+def download_video() -> tuple | Response:
     try:
-        data = request.get_json()
+        data : dict = request.get_json()
         if not data or 'url' not in data:
             return jsonify({"error": "Missing 'url' in request body"}), 400
 
@@ -41,7 +41,7 @@ def download_video():
         )
     except Exception as e:
         print(f"Error occurred: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        abort(500 , description="Internal Server Error")
 
 if __name__ == '__main__':
     app.run(debug=True)
