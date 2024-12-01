@@ -23,22 +23,6 @@ venv.bak/
 .venv/
 *.env
 
-# Java (Java Backends)
-*.class
-*.jar
-*.war
-*.ear
-*.iml
-.gradle/
-build/
-target/
-*.log
-
-# PHP (PHP Backends)
-vendor/
-*.log
-*.cache
-
 # Shared Files and Debugging Artifacts
 shared-assets/*.lock
 
